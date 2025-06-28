@@ -55,6 +55,10 @@ import net.rpcsx.RPCSXTheme
 import net.rpcsx.R
 import kotlin.math.roundToInt
 import android.view.ViewConfiguration
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import androidx.compose.ui.input.pointer.awaitFirstDown
+import androidx.compose.ui.input.pointer.waitForUpOrCancellation
 
 fun Modifier.onLongpressRepeater(
     longPressTimeout: Long = ViewConfiguration.getLongPressTimeout().toLong(),
@@ -309,7 +313,7 @@ fun ControlPanel(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton( modifier = Modifier.onLongpressRepeater {onMoveUp} ) {
+                IconButton( modifier = Modifier.onLongpressRepeater {onMoveUp}, onClick = {} ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = "Move Up",
@@ -320,7 +324,7 @@ fun ControlPanel(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton( modifier = Modifier.onLongpressRepeater {onMoveLeft} ) {
+                    IconButton( modifier = Modifier.onLongpressRepeater {onMoveLeft}, onClock = {} ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Move Left",
@@ -339,7 +343,7 @@ fun ControlPanel(
                         )
                     )
 
-                    IconButton( modifier = Modifier.onLongpressRepeater {onMoveRight} ) {
+                    IconButton( modifier = Modifier.onLongpressRepeater {onMoveRight}, onClick = {} ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = "Move Right",
@@ -348,7 +352,7 @@ fun ControlPanel(
                     }
                 }
 
-                IconButton( modifier = Modifier.onLongpressRepeater {onMoveDown} ) {
+                IconButton( modifier = Modifier.onLongpressRepeater {onMoveDown}, onClick = {} ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Move Down",
