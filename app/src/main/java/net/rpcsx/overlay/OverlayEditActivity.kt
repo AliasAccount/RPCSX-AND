@@ -54,6 +54,30 @@ import androidx.compose.ui.viewinterop.AndroidView
 import net.rpcsx.RPCSXTheme
 import net.rpcsx.R
 import kotlin.math.roundToInt
+import android.view.ViewConfiguration
+
+fun Modifier.onLongpressRepeater(
+    longPressTimeout: Long = ViewConfiguration.getLongPressTimeout().toLong(),
+    runner: () -> Unit
+): Modifier = this.then(
+    pointerInput(Unit) {
+        while (true) {
+            awaitPointerEventScope {
+                val down = awaitFirstDown()
+                runner()
+                val job = launch {
+                    delay(longPressTimeout)
+                    while (currentEvent.changes.any { it.pressed }) {
+                        runner()
+                        delay(50)
+                    }
+                }
+                waitForUpOrCancellation()
+                job.cancel()
+            }
+        }
+    }
+)
 
 class OverlayEditActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -285,7 +309,7 @@ fun ControlPanel(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = onMoveUp) {
+                IconButton( modifier = Modifier.onLongpressRepeater {onMoveUp} ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = "Move Up",
@@ -296,7 +320,7 @@ fun ControlPanel(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = onMoveLeft) {
+                    IconButton( modifier = Modifier.onLongpressRepeater {onMoveLeft} ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Move Left",
@@ -315,7 +339,7 @@ fun ControlPanel(
                         )
                     )
 
-                    IconButton(onClick = onMoveRight) {
+                    IconButton( modifier = Modifier.onLongpressRepeater {onMoveRight} ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = "Move Right",
@@ -324,7 +348,7 @@ fun ControlPanel(
                     }
                 }
 
-                IconButton(onClick = onMoveDown) {
+                IconButton( modifier = Modifier.onLongpressRepeater {onMoveDown} ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Move Down",
